@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy Premium Black Hole</title>
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:black;
+    font-family:Arial,sans-serif;
+    color:white;
+}
+
+.overlay{
+    position:absolute;
+    z-index:10;
+    width:100%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    pointer-events:none;
+}
+
+h1{
+    font-size:clamp(40px,6vw,90px);
+    text-shadow:0 0 20px white;
+}
+
+p{
+    opacity:0.7;
+    letter-spacing:4px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+    <h1>Dede Agung Gunawan</h1>
+    <p>INTERSTELLAR BLACK HOLE</p>
+</div>
+
+<script type="module">
+
+import * as THREE from
+'https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js';
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+2000
+);
+
+camera.position.z = 22;
+
+const renderer = new THREE.WebGLRenderer({
+    antialias:true
+});
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+document.body.appendChild(
+renderer.domElement
+);
+
+/* STARS */
+
+const starGeometry =
+new THREE.BufferGeometry();
+
+const starVertices = [];
+
+for(let i=0;i<5000;i++){
+
+    starVertices.push(
+        (Math.random()-0.5)*2000,
+        (Math.random()-0.5)*2000,
+        (Math.random()-0.5)*2000
+    );
+
+}
+
+starGeometry.setAttribute(
+'position',
+new THREE.Float32BufferAttribute(
+starVertices,
+3
+)
+);
+
+const starMaterial =
+new THREE.PointsMaterial({
+    color:0xffffff,
+    size:1
+});
+
+const stars =
+new THREE.Points(
+starGeometry,
+starMaterial
+);
+
+scene.add(stars);
+
+/* BLACK HOLE */
+
+const blackHoleGeometry =
+new THREE.SphereGeometry(5,128,128);
+
+const blackHoleMaterial =
+new THREE.MeshBasicMaterial({
+    color:0x000000
+});
+
+const blackHole =
+new THREE.Mesh(
+blackHoleGeometry,
+blackHoleMaterial
+);
+
+scene.add(blackHole);
+
+/* DISK */
+
+const diskGeometry =
+new THREE.RingGeometry(7,12,256);
+
+const diskMaterial =
+new THREE.MeshBasicMaterial({
+
+    color:0xff8800,
+
+    side:THREE.DoubleSide,
+
+    transparent:true,
+
+    opacity:0.95
+
+});
+
+const disk =
+new THREE.Mesh(
+diskGeometry,
+diskMaterial
+);
+
+disk.rotation.x =
+Math.PI / 2.2;
+
+scene.add(disk);
+
+/* PARTICLES */
+
+const particleGeometry =
+new THREE.BufferGeometry();
+
+const positions = [];
+
+for(let i=0;i<3000;i++){
+
+    const radius =
+    8 + Math.random()*6;
+
+    const angle =
+    Math.random()*Math.PI*2;
+
+    positions.push(
+        Math.cos(angle)*radius,
+        (Math.random()-0.5)*1.5,
+        Math.sin(angle)*radius
+    );
+
+}
+
+particleGeometry.setAttribute(
+'position',
+new THREE.Float32BufferAttribute(
+positions,
+3
+)
+);
+
+const particleMaterial =
+new THREE.PointsMaterial({
+
+    color:0xffaa33,
+
+    size:0.12
+
+});
+
+const particles =
+new THREE.Points(
+particleGeometry,
+particleMaterial
+);
+
+scene.add(particles);
+
+/* LIGHT */
+
+const light =
+new THREE.PointLight(
+0xffaa33,
+4,
+200
+);
+
+scene.add(light);
+
+/* ANIMATION */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    disk.rotation.z += 0.02;
+
+    particles.rotation.y += 0.008;
+
+    stars.rotation.y += 0.0005;
+
+    renderer.render(scene,camera);
+
+}
+
+animate();
+
+window.addEventListener(
+'resize',
+()=>{
+
+camera.aspect =
+window.innerWidth/window.innerHeight;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+});
+
+</script>
+
+</body>
+</html>
